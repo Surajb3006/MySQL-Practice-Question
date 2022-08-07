@@ -23,3 +23,28 @@ Sol.1) select name, population,area from World where area>= 3000000 or populatio
 | Afghanistan | 25500100   | 652230  |
 | Algeria     | 37100000   | 2381741 |
 +-------------+------------+---------+
+
+Q2. Write an SQL query to report all the classes that have at least five students.
+Return the result table in any order.
+Input: 
+Courses table:
++---------+----------+
+| student | class    |
++---------+----------+
+| A       | Math     |
+| B       | English  |
+| C       | Math     |
+| D       | Biology  |
+| E       | Math     |
+| F       | Computer |
+| G       | Math     |
+| H       | Math     |
+| I       | Math     |
++---------+----------+
+Sol.2) select class from courses group by class having count( distinct student)>=5;
+Output: 
++---------+
+| class   |
++---------+
+| Math    |
++---------+
