@@ -585,4 +585,49 @@ Output:
 | 1       | 1              |
 | 2       | 2              |
 +---------+----------------+
+Q24)Write an SQL query to find the customer_number for the customer who has placed the largest number of orders.
+
+The test cases are generated so that exactly one customer will have placed more orders than any other customer.
+Input: 
+Orders table:
++--------------+-----------------+
+| order_number | customer_number |
++--------------+-----------------+
+| 1            | 1               |
+| 2            | 2               |
+| 3            | 3               |
+| 4            | 3               |
++--------------+-----------------+
+Sol)select customer_number from orders group by customer_number order by count(order_number) desc limit 1;
+OR 
+SELECT customer_number FROM Orders GROUP BY customer_number
+HAVING COUNT(order_number) = 
+MAX(SELECT COUNT(order_number) FROM Orders GROUP BY customer_number)
+Output: 
++-----------------+
+| customer_number |
++-----------------+
+| 3               |
++-----------------+
+Q25)Write an SQL query to report the first login date for each player.Return the result table in any order.
+Input: 
+Activity table:
++-----------+-----------+------------+--------------+
+| player_id | device_id | event_date | games_played |
++-----------+-----------+------------+--------------+
+| 1         | 2         | 2016-03-01 | 5            |
+| 1         | 2         | 2016-05-02 | 6            |
+| 2         | 3         | 2017-06-25 | 1            |
+| 3         | 1         | 2016-03-02 | 0            |
+| 3         | 4         | 2018-07-03 | 5            |
++-----------+-----------+------------+--------------+
+Sol)select player_id,min(event_date) as first_login from activity group by (player_id);
+Output: 
++-----------+-------------+
+| player_id | first_login |
++-----------+-------------+
+| 1         | 2016-03-01  |
+| 2         | 2017-06-25  |
+| 3         | 2016-03-02  |
++-----------+-------------+
 
