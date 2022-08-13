@@ -630,4 +630,132 @@ Output:
 | 2         | 2017-06-25  |
 | 3         | 2016-03-02  |
 +-----------+-------------+
-
+Q26)Write an SQL query to report the Capital gain/loss for each stock.
+The Capital gain/loss of a stock is the total gain or loss after buying and selling the stock one or many times.
+Return the result table in any order
+Stocks table:
++---------------+-----------+---------------+--------+
+| stock_name    | operation | operation_day | price  |
++---------------+-----------+---------------+--------+
+| Leetcode      | Buy       | 1             | 1000   |
+| Corona Masks  | Buy       | 2             | 10     |
+| Leetcode      | Sell      | 5             | 9000   |
+| Handbags      | Buy       | 17            | 30000  |
+| Corona Masks  | Sell      | 3             | 1010   |
+| Corona Masks  | Buy       | 4             | 1000   |
+| Corona Masks  | Sell      | 5             | 500    |
+| Corona Masks  | Buy       | 6             | 1000   |
+| Handbags      | Sell      | 29            | 7000   |
+| Corona Masks  | Sell      | 10            | 10000  |
++---------------+-----------+---------------+--------+
+Sol)SELECT stock_name, SUM(
+    CASE
+        WHEN operation = 'Buy' THEN -price
+        ELSE price
+    END
+)AS capital_gain_loss FROM Stocks GROUP BY stock_name;
+ OR
+ SELECT stock_name, SUM(IF(operation='Buy',-price,price)) As capital_gain_loss
+FROM Stocks GROUP BY stock_name:
+Output: 
++---------------+-------------------+
+| stock_name    | capital_gain_loss |
++---------------+-------------------+
+| Corona Masks  | 9500              |
+| Leetcode      | 8000              |
+| Handbags      | -23000            |
++---------------+-------------------+
+Q27)Write an SQL query to report the distance traveled by each user.
+Return the result table ordered by travelled_distance in descending order, if two or more users traveled the same distance, order them by their name in ascending order.
+Input: 
+Users table:
++------+-----------+
+| id   | name      |
++------+-----------+
+| 1    | Alice     |
+| 2    | Bob       |
+| 3    | Alex      |
+| 4    | Donald    |
+| 7    | Lee       |
+| 13   | Jonathan  |
+| 19   | Elvis     |
++------+-----------+
+Rides table:
++------+----------+----------+
+| id   | user_id  | distance |
++------+----------+----------+
+| 1    | 1        | 120      |
+| 2    | 2        | 317      |
+| 3    | 3        | 222      |
+| 4    | 7        | 100      |
+| 5    | 13       | 312      |
+| 6    | 19       | 50       |
+| 7    | 7        | 120      |
+| 8    | 19       | 400      |
+| 9    | 7        | 230      |
++------+----------+----------+
+Sol)select u.name, ifnull(sum(r.distance), 0) as travelled_distance
+from users u
+left join rides r
+on u.id = r.user_id
+group by r.user_id
+order by travelled_distance desc, u.name asc;
+Output: 
++----------+--------------------+
+| name     | travelled_distance |
++----------+--------------------+
+| Elvis    | 450                |
+| Lee      | 450                |
+| Bob      | 317                |
+| Jonathan | 312                |
+| Alex     | 222                |
+| Alice    | 120                |
+| Donald   | 0                  |
++----------+--------------------+
+Q28)Write an SQL query to find for each user, the join date and the number of orders they made as a buyer in 2019.
+Return the result table in any order.
+Input: 
+Users table:
++---------+------------+----------------+
+| user_id | join_date  | favorite_brand |
++---------+------------+----------------+
+| 1       | 2018-01-01 | Lenovo         |
+| 2       | 2018-02-09 | Samsung        |
+| 3       | 2018-01-19 | LG             |
+| 4       | 2018-05-21 | HP             |
++---------+------------+----------------+
+Orders table:
++----------+------------+---------+----------+-----------+
+| order_id | order_date | item_id | buyer_id | seller_id |
++----------+------------+---------+----------+-----------+
+| 1        | 2019-08-01 | 4       | 1        | 2         |
+| 2        | 2018-08-02 | 2       | 1        | 3         |
+| 3        | 2019-08-03 | 3       | 2        | 3         |
+| 4        | 2018-08-04 | 1       | 4        | 2         |
+| 5        | 2018-08-04 | 1       | 3        | 4         |
+| 6        | 2019-08-05 | 2       | 2        | 4         |
++----------+------------+---------+----------+-----------+
+Items table:
++---------+------------+
+| item_id | item_brand |
++---------+------------+
+| 1       | Samsung    |
+| 2       | Lenovo     |
+| 3       | LG         |
+| 4       | HP         |
++---------+------------+
+Sol)SELECT u.user_id AS buyer_id, join_date, COUNT(order_date) AS orders_in_2019 
+FROM Users as u
+LEFT JOIN Orders as o
+ON u.user_id = o.buyer_id
+AND YEAR(order_date) = '2019'
+GROUP BY u.user_id
+Output: 
++-----------+------------+----------------+
+| buyer_id  | join_date  | orders_in_2019 |
++-----------+------------+----------------+
+| 1         | 2018-01-01 | 1              |
+| 2         | 2018-02-09 | 2              |
+| 3         | 2018-01-19 | 0              |
+| 4         | 2018-05-21 | 0              |
++-----------+------------+----------------+
