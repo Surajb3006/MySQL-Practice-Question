@@ -759,3 +759,100 @@ Output:
 | 3         | 2018-01-19 | 0              |
 | 4         | 2018-05-21 | 0              |
 +-----------+------------+----------------+
+Q29)Write an SQL query to report all the duplicate emails.
+Return the result table in any order.
+Input: 
+Person table:
++----+---------+
+| id | email   |
++----+---------+
+| 1  | a@b.com |
+| 2  | c@d.com |
+| 3  | a@b.com |
++----+---------+
+Sol)select Email from Person group by Email having count(email) > 1
+Output: 
++---------+
+| Email   |
++---------+
+| a@b.com |
++---------+
+Q30)Write a SQL query for a report that provides the pairs (actor_id, director_id) where the actor has cooperated with the director at least three times.
+Return the result table in any order.
+Input: 
+ActorDirector table:
++-------------+-------------+-------------+
+| actor_id    | director_id | timestamp   |
++-------------+-------------+-------------+
+| 1           | 1           | 0           |
+| 1           | 1           | 1           |
+| 1           | 1           | 2           |
+| 1           | 2           | 3           |
+| 1           | 2           | 4           |
+| 2           | 1           | 5           |
+| 2           | 1           | 6           |
++-------------+-------------+-------------+
+Sol)select actor_id, director_id from actordirector group by actor_id,director_id having count(actor_id)>=3;
+Output: 
++-------------+-------------+
+| actor_id    | director_id |
++-------------+-------------+
+| 1           | 1           |
++-------------+-------------+
+Q31)Write an SQL query to report the name and balance of users with a balance higher than 10000. The balance of an account is equal to the sum of the amounts of all transactions involving that account.
+Return the result table in any order.
+Input: 
+Users table:
++------------+--------------+
+| account    | name         |
++------------+--------------+
+| 900001     | Alice        |
+| 900002     | Bob          |
+| 900003     | Charlie      |
++------------+--------------+
+Transactions table:
++------------+------------+------------+---------------+
+| trans_id   | account    | amount     | transacted_on |
++------------+------------+------------+---------------+
+| 1          | 900001     | 7000       |  2020-08-01   |
+| 2          | 900001     | 7000       |  2020-09-01   |
+| 3          | 900001     | -3000      |  2020-09-02   |
+| 4          | 900002     | 1000       |  2020-09-12   |
+| 5          | 900003     | 6000       |  2020-08-07   |
+| 6          | 900003     | 6000       |  2020-09-07   |
+| 7          | 900003     | -4000      |  2020-09-11   |
++------------+------------+------------+---------------+
+Sol)select a.name,sum(b.amount) balance from Users a join Transactions b on a.account = b.account group by a.account having balance > 10000;
+Output: 
++------------+------------+
+| name       | balance    |
++------------+------------+
+| Alice      | 11000      |
++------------+------------+
+Q32)Write an SQL query that reports the products that were only sold in the first quarter of 2019. That is, between 2019-01-01 and 2019-03-31 inclusive.
+Return the result table in any order.
+Input: 
+Product table:
++------------+--------------+------------+
+| product_id | product_name | unit_price |
++------------+--------------+------------+
+| 1          | S8           | 1000       |
+| 2          | G4           | 800        |
+| 3          | iPhone       | 1400       |
++------------+--------------+------------+
+Sales table:
++-----------+------------+----------+------------+----------+-------+
+| seller_id | product_id | buyer_id | sale_date  | quantity | price |
++-----------+------------+----------+------------+----------+-------+
+| 1         | 1          | 1        | 2019-01-21 | 2        | 2000  |
+| 1         | 2          | 2        | 2019-02-17 | 1        | 800   |
+| 2         | 2          | 3        | 2019-06-02 | 1        | 800   |
+| 3         | 3          | 4        | 2019-05-13 | 2        | 2800  |
++-----------+------------+----------+------------+----------+-------+
+Sol)SELECT s.product_id, p.product_name FROM sales s JOIN product p on s.product_id = p.product_id GROUP BY s.product_id HAVING MIN(sale_date) >= '2019-01-01' AND MAX(sale_date) <= '2019-03-31' 
+Output: 
++-------------+--------------+
+| product_id  | product_name |
++-------------+--------------+
+| 1           | S8           |
++-------------+--------------+
